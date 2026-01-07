@@ -10,6 +10,8 @@ urlpatterns = [
     path('observs/', views.liste_observations, name='liste_observations'),
     path('new_observ/', views.new_observ, name='new_observ'),
     path('delete_observ/<int:id>/', views.delete_observ, name='delete_observ'),
+    path('change_observ/<int:id>/', views.change_observ, name='change_observ'),
+
 
 
 
