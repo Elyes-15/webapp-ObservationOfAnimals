@@ -105,3 +105,10 @@ mkdir -p observo/fixtures
 
 # Charger les données dans la base SQLite
 python manage.py loaddata animals
+
+## 2.2.6– Vue et template pour les détails d'un animal
+
+
+# Créer la vue animal_detail dans observo/views.py
+# Créer le template observo/templates/observo/animal_detail.html
+# Ajouter l'URL dans observo/urls.py et inclure dans cc2/urls.py
