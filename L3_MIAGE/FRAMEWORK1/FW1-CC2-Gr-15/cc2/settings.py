@@ -1,13 +1,4 @@
-NSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
 
-    'observo',
-]
 """
 Django settings for cc2 project.
 
@@ -40,7 +31,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-NSTALLED_APPS = [
+INSTALLED_APPS = [
     'observo',
     'django.contrib.admin',
     'django.contrib.auth',

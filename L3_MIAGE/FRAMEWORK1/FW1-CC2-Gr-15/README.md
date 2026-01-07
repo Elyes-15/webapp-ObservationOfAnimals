@@ -22,10 +22,10 @@ INSTALLED_APPS = [
     'observo',
 ]
 
-## 2. Migration initiales
+# 1.2. Migration initiales
 python manage.py migrate
 
-## 3. Configuration Docker
+# 1.3. Configuration Docker
 services:
   base:
     build:
@@ -46,10 +46,31 @@ services:
       PS1: "[ $$(whoami) | \\w ] "
 
 
-## 4. Lancement du serveur Django depuis le conteneur
+# 1.4. Lancement du serveur Django depuis le conteneur
 python manage.py runserver 0.0.0.0:8000
 
 
 
+## 2. Vue et template About:
+vue:
+from django.shortcuts import render
+
+# Create your views here.
+def about(request):
+    return render(request, 'observo/about.html')
+
+# url:
+CC2/urls.py:
+from django.contrib import admin
+from django.urls import path
+from observo import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.about, name='home'),      # page d'accueil
+    path('about/', views.about, name='about'),
+]
+# TEST :
+http://127.0.0.1:8088/about/
 
 
