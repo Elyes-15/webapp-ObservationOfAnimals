@@ -136,3 +136,14 @@ Commandes et étapes utilisées :
 # Créer le template observo/templates/observo/delete_animal.html
 # Ajouter l'URL /delete_animal/n dans observo/urls.py
 # Ajouter un lien de suppression dans le tableau de la liste des animaux
+
+## Question 10 – Modifier un animal
+
+Commandes et étapes utilisées :
+
+```bash
+# Création de la vue change_animal
+# Réutilisation du formulaire AnimalForm avec instance
+# Création du template change_animal.html
+# Ajout de l'URL /change_animal/n
+# Ajout d'un lien de modification dans la liste des animaux

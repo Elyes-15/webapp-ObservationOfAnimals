@@ -13,6 +13,8 @@
                 <th>Description (extrait)</th>
                 <th>Détails</th>
                   <th>Supprimer</th>
+                  <th>Modifier</th>
+
             </tr>
         </thead>
         <tbody>
@@ -24,6 +26,10 @@
                 <td>
     <a href="{% url 'delete_animal' animal.pk %}">Supprimer</a>
 </td>
+<td>
+    <a href="{% url 'change_animal' animal.pk %}">Modifier</a>
+</td>
+
 
             </tr>
             {% endfor %}

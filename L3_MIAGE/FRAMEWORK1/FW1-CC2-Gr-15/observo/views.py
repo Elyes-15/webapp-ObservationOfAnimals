@@ -32,3 +32,19 @@ def delete_animal(request, animal_id):
         return redirect('animal_list')
     
     return render(request, 'observo/delete_animal.html', {'animal': animal})
+
+def change_animal(request, animal_id):
+    animal = get_object_or_404(Animal, pk=animal_id)
+
+    if request.method == 'POST':
+        form = AnimalForm(request.POST, instance=animal)
+        if form.is_valid():
+            form.save()
+            return redirect('animal_list')
+    else:
+        form = AnimalForm(instance=animal)
+
+    return render(request, 'observo/change_animal.html', {
+        'form': form,
+        'animal': animal
+    })

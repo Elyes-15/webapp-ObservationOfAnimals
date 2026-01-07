@@ -10,5 +10,7 @@ urlpatterns = [
     path('animals/', views.animal_list, name='animal_list'),
     path('new_animal/', views.new_animal, name='new_animal'),
     path('delete_animal/<int:animal_id>/', views.delete_animal, name='delete_animal'),
+    path('change_animal/<int:animal_id>/', views.change_animal, name='change_animal'),
+
 
 ]
