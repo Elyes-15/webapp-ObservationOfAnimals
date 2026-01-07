@@ -1,0 +1,21 @@
+<h1>Liste des observations</h1>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Animal</th>
+        <th>Date</th>
+        <th>Localisation</th>
+        <th>Détails</th>
+    </tr>
+
+    {% for obs in observations %}
+    <tr>
+        <td>{{ obs.animal.nom }}</td>
+        <td>{{ obs.date }}</td>
+        <td>{{ obs.latitude }}, {{ obs.longitude }}</td>
+        <td>
+            <a href="/observs/{{ obs.id }}/">Voir la fiche</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

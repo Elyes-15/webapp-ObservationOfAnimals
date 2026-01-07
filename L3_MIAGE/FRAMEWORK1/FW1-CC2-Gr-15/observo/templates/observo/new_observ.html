@@ -1,0 +1,10 @@
+<h1>Ajouter une nouvelle observation</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Enregistrer</button>
+</form>
+
+<a href="/observs/">Retour à la liste</a>

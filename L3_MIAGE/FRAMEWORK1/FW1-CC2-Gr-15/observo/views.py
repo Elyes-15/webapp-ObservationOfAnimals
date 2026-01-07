@@ -1,5 +1,6 @@
-from django.shortcuts import render , get_object_or_404
+from django.shortcuts import render , get_object_or_404 , redirect
 from .models import Observation
+from .forms import ObservationForm
 
 # Create your views here.
 def about(request):
@@ -13,3 +14,16 @@ def detail_observation(request, id):
 def liste_observations(request):
     observations = Observation.objects.all().order_by('-date', '-heure')
     return render(request, 'observo/liste_observations.html', {'observations': observations})
+
+
+
+def new_observ(request):
+    if request.method == 'POST':
+        form = ObservationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_observations')  # renvoie vers la liste
+    else:
+        form = ObservationForm()
+
+    return render(request, 'observo/new_observ.html', {'form': form})
