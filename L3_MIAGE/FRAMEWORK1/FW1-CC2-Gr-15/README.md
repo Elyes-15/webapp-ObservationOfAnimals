@@ -107,8 +107,19 @@ mkdir -p observo/fixtures
 python manage.py loaddata animals
 
 ## 2.2.6– Vue et template pour les détails d'un animal
+Commandes 
 
-
+```bash
 # Créer la vue animal_detail dans observo/views.py
 # Créer le template observo/templates/observo/animal_detail.html
 # Ajouter l'URL dans observo/urls.py et inclure dans cc2/urls.py
+
+
+## Question 7 – Liste tabulaire des animaux
+
+Commandes 
+
+```bash
+# Créer la vue animal_list dans observo/views.py
+# Créer le template observo/templates/observo/animal_list.html
+# Ajouter l'URL dans observo/urls.py

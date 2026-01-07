@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des animaux</title>
+</head>
+<body>
+    <h1>Liste des animaux</h1>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Nom commun</th>
+                <th>Description (extrait)</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for animal in animals %}
+            <tr>
+                <td>{{ animal.nom_commun }}</td>
+                <td>{{ animal.description|slice:":20" }}...</td>
+                <td><a href="{% url 'animal_detail' animal.pk %}">Voir fiche</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
