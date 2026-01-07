@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails de l'animal</title>
+</head>
+<body>
+    <h1>{{ animal.nom_commun }} ({{ animal.nom_savant }})</h1>
+    <ul>
+        <li><strong>Embranchement :</strong> {{ animal.embranchement }}</li>
+        <li><strong>Classe :</strong> {{ animal.classe }}</li>
+        <li><strong>Ordre :</strong> {{ animal.ordre }}</li>
+        {% if animal.sous_ordre %}<li><strong>Sous-ordre :</strong> {{ animal.sous_ordre }}</li>{% endif %}
+        <li><strong>Famille :</strong> {{ animal.famille }}</li>
+        <li><strong>Genre :</strong> {{ animal.genre }}</li>
+        <li><strong>Statut IUCN :</strong> {{ animal.statut_iucn }}</li>
+    </ul>
+    <p>{{ animal.description }}</p>
+</body>
+</html>

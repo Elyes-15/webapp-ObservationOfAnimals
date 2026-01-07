@@ -86,4 +86,64 @@ Email:elyes.fetmouche@etu.univ-orleans.fr
 Mot de passe:223160638JE
 
 ## 3.3:On lance le serveur et on se connecte:
-http://127.0.0.1:8088/admin/
+http://127.0.0.1:8088/admin/ 
+
+## 2.2.4:Gestion des animaux:
+ Créer un modèle Animal. 
+ pour rendre le modèle disponible dans l’administration Django :
+ dans admin.py : on tape  admin.site.register(Animal) .
+
+ ## 2.2.5– Ajouter des animaux et créer un fixture
+
+Commandes utilisées :
+
+```bash
+# Créer le dossier fixtures
+mkdir -p observo/fixtures
+
+# Créer le fichier animals.json avec les données fournies
+
+# Charger les données dans la base SQLite
+python manage.py loaddata animals
+
+## 2.2.6– Vue et template pour les détails d'un animal
+
+# Créer la vue animal_detail dans observo/views.py
+# Créer le template observo/templates/observo/animal_detail.html
+# Ajouter l'URL dans observo/urls.py et inclure dans cc2/urls.py
+
+
+## 2.2.7 – Liste tabulaire des animaux
+
+
+# Créer la vue animal_list dans observo/views.py
+# Créer le template observo/templates/observo/animal_list.html
+# Ajouter l'URL dans observo/urls.py
+
+## 2.2.8 – Ajouter un nouvel animal via formulaire
+
+# Créer le formulaire AnimalForm dans observo/forms.py
+# Créer la vue new_animal dans observo/views.py
+# Créer le template observo/templates/observo/new_animal.html
+# Ajouter l'URL /new_animal dans observo/urls.py
+
+## Question 9 – Supprimer un animal
+
+Commandes et étapes utilisées :
+
+```bash
+# Créer la vue delete_animal dans observo/views.py
+# Créer le template observo/templates/observo/delete_animal.html
+# Ajouter l'URL /delete_animal/n dans observo/urls.py
+# Ajouter un lien de suppression dans le tableau de la liste des animaux
+
+## Question 10 – Modifier un animal
+
+Commandes et étapes utilisées :
+
+```bash
+# Création de la vue change_animal
+# Réutilisation du formulaire AnimalForm avec instance
+# Création du template change_animal.html
+# Ajout de l'URL /change_animal/n
+# Ajout d'un lien de modification dans la liste des animaux

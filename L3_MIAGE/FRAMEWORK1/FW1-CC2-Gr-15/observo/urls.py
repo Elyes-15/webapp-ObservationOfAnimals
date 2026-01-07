@@ -6,4 +6,11 @@ from observo import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('about/', views.about, name='about'),
+    path('animals/<int:animal_id>/', views.animal_detail, name='animal_detail'),
+    path('animals/', views.animal_list, name='animal_list'),
+    path('new_animal/', views.new_animal, name='new_animal'),
+    path('delete_animal/<int:animal_id>/', views.delete_animal, name='delete_animal'),
+    path('change_animal/<int:animal_id>/', views.change_animal, name='change_animal'),
+
+
 ]

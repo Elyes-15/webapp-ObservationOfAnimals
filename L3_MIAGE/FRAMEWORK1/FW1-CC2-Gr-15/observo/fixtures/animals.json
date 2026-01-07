@@ -1,0 +1,162 @@
+[
+  {
+    "model": "observo.animal",
+    "pk": 1,
+    "fields": {
+      "nom_commun": "Renard roux",
+      "nom_savant": "Vulpes vulpes",
+      "embranchement": "Chordata",
+      "classe": "Mammalia",
+      "ordre": "Carnivora",
+      "sous_ordre": "Caniformia",
+      "famille": "Canidae",
+      "genre": "Vulpes",
+      "statut_iucn": "LC",
+      "description": "Petit mammifère omnivore au pelage roux, très répandu en Europe."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 2,
+    "fields": {
+      "nom_commun": "Loup gris",
+      "nom_savant": "Canis lupus",
+      "embranchement": "Chordata",
+      "classe": "Mammalia",
+      "ordre": "Carnivora",
+      "sous_ordre": "Caniformia",
+      "famille": "Canidae",
+      "genre": "Canis",
+      "statut_iucn": "LC",
+      "description": "Prédateur social vivant en meutes, originaire des régions froides."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 3,
+    "fields": {
+      "nom_commun": "Hibou grand-duc",
+      "nom_savant": "Bubo bubo",
+      "embranchement": "Chordata",
+      "classe": "Aves",
+      "ordre": "Strigiformes",
+      "sous_ordre": "",
+      "famille": "Strigidae",
+      "genre": "Bubo",
+      "statut_iucn": "LC",
+      "description": "Grand rapace nocturne au plumage brun et aux yeux perçants."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 4,
+    "fields": {
+      "nom_commun": "Tortue d'Hermann",
+      "nom_savant": "Testudo hermanni",
+      "embranchement": "Chordata",
+      "classe": "Reptilia",
+      "ordre": "Testudines",
+      "sous_ordre": "",
+      "famille": "Testudinidae",
+      "genre": "Testudo",
+      "statut_iucn": "EN",
+      "description": "Tortue terrestre méditerranéenne, menacée par la perte d'habitat."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 5,
+    "fields": {
+      "nom_commun": "Chevreuil",
+      "nom_savant": "Capreolus capreolus",
+      "embranchement": "Chordata",
+      "classe": "Mammalia",
+      "ordre": "Artiodactyla",
+      "sous_ordre": "",
+      "famille": "Cervidae",
+      "genre": "Capreolus",
+      "statut_iucn": "LC",
+      "description": "Petit cervidé herbivore que l'on trouve dans les forêts européennes."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 6,
+    "fields": {
+      "nom_commun": "Renne",
+      "nom_savant": "Rangifer tarandus",
+      "embranchement": "Chordata",
+      "classe": "Mammalia",
+      "ordre": "Artiodactyla",
+      "sous_ordre": "",
+      "famille": "Cervidae",
+      "genre": "Rangifer",
+      "statut_iucn": "LC",
+      "description": "Cervidé migrateur des régions arctiques et subarctiques."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 7,
+    "fields": {
+      "nom_commun": "Couleuvre à collier",
+      "nom_savant": "Natrix natrix",
+      "embranchement": "Chordata",
+      "classe": "Reptilia",
+      "ordre": "Squamata",
+      "sous_ordre": "Serpentes",
+      "famille": "Colubridae",
+      "genre": "Natrix",
+      "statut_iucn": "LC",
+      "description": "Serpent non venimeux fréquent dans les zones humides d'Europe."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 8,
+    "fields": {
+      "nom_commun": "Sanglier",
+      "nom_savant": "Sus scrofa",
+      "embranchement": "Chordata",
+      "classe": "Mammalia",
+      "ordre": "Artiodactyla",
+      "sous_ordre": "",
+      "famille": "Suidae",
+      "genre": "Sus",
+      "statut_iucn": "LC",
+      "description": "Mammifère omnivore robuste, très répandu dans les forêts européennes."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 9,
+    "fields": {
+      "nom_commun": "Hérisson d'Europe",
+      "nom_savant": "Erinaceus europaeus",
+      "embranchement": "Chordata",
+      "classe": "Mammalia",
+      "ordre": "Eulipotyphla",
+      "sous_ordre": "",
+      "famille": "Erinaceidae",
+      "genre": "Erinaceus",
+      "statut_iucn": "LC",
+      "description": "Petit mammifère insectivore au corps couvert d'épines."
+    }
+  },
+  {
+    "model": "observo.animal",
+    "pk": 10,
+    "fields": {
+      "nom_commun": "Cheval de Przewalski",
+      "nom_savant": "Equus ferus przewalskii",
+      "embranchement": "Chordata",
+      "classe": "Mammalia",
+      "ordre": "Perissodactyla",
+      "sous_ordre": "",
+      "famille": "Equidae",
+      "genre": "Equus",
+      "statut_iucn": "EN",
+      "description": "Seul cheval sauvage restant à l'état naturel, originaire d'Asie centrale."
+    }
+  }
+]
