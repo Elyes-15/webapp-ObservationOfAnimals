@@ -25,3 +25,10 @@ def new_animal(request):
         form = AnimalForm()  
 
     return render(request, 'observo/new_animal.html', {'form': form})
+def delete_animal(request, animal_id):
+    animal = get_object_or_404(Animal, pk=animal_id)
+    if request.method == 'POST':
+        animal.delete()  
+        return redirect('animal_list')
+    
+    return render(request, 'observo/delete_animal.html', {'animal': animal})

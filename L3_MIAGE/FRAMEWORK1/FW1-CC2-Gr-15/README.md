@@ -126,3 +126,13 @@ python manage.py loaddata animals
 # Créer la vue new_animal dans observo/views.py
 # Créer le template observo/templates/observo/new_animal.html
 # Ajouter l'URL /new_animal dans observo/urls.py
+
+## Question 9 – Supprimer un animal
+
+Commandes et étapes utilisées :
+
+```bash
+# Créer la vue delete_animal dans observo/views.py
+# Créer le template observo/templates/observo/delete_animal.html
+# Ajouter l'URL /delete_animal/n dans observo/urls.py
+# Ajouter un lien de suppression dans le tableau de la liste des animaux
