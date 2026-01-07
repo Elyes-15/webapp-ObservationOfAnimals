@@ -6,6 +6,7 @@
         <th>Date</th>
         <th>Localisation</th>
         <th>Détails</th>
+        <th>Supprimer</th>
     </tr>
 
     {% for obs in observations %}
@@ -16,6 +17,10 @@
         <td>
             <a href="/observs/{{ obs.id }}/">Voir la fiche</a>
         </td>
+        <td>
+            <a href="/delete_observ/{{ obs.id }}/">Supprimer</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
+

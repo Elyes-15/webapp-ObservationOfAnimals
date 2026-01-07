@@ -27,3 +27,14 @@ def new_observ(request):
         form = ObservationForm()
 
     return render(request, 'observo/new_observ.html', {'form': form})
+
+
+def delete_observ(request, id):
+    observation = get_object_or_404(Observation, pk=id)
+
+    if request.method == 'POST':
+        observation.delete()
+        return redirect('liste_observations')
+
+    return render(request, 'observo/delete_observ.html', {'observation': observation})
+
