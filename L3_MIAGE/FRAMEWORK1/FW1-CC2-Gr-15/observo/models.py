@@ -15,7 +15,6 @@ class Animal(models.Model):
     def __str__(self):
         return self.nom_commun
 
-
 class Observation(models.Model):
     date = models.DateField()
     heure = models.TimeField()

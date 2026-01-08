@@ -1,16 +1,20 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Ajouter un nouvel animal</title>
-</head>
-<body>
+{% extends 'observo/base.html' %}
+
+{% block title %}Ajouter un nouvel animal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
     <h1>Ajouter un nouvel animal</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Ajouter</button>
-    </form>
-    <p><a href="{% url 'animal_list' %}">Retour à la liste des animaux</a></p>
-</body>
-</html>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Ajouter</button>
+                <a class="btn btn-secondary" href="{% url 'animal_list' %}">Retour à la liste</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

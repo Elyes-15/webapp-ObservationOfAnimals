@@ -1,10 +1,20 @@
-<h1>Modifier l’observation {{ observation.id }}</h1>
+{% extends 'observo/base.html' %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% block title %}Modifier l’observation {{ observation.id }}{% endblock %}
 
-    <button type="submit">Enregistrer les modifications</button>
-</form>
+{% block content %}
+<div class="container mt-4">
+    <h1>Modifier l’observation #{{ observation.id }}</h1>
 
-<a href="/observs/">Annuler</a>
+    <div class="card mt-3">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
+                <a class="btn btn-secondary" href="{% url 'liste_observations' %}">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
