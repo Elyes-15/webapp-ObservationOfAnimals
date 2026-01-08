@@ -87,71 +87,185 @@ Mot de passe:223160638JE
 
 ## 3.3:On lance le serveur et on se connecte:
 http://127.0.0.1:8088/admin/ 
+## 2.3.1 : Gestion des observations 
 
-## 2.2.4:Gestion des animaux:
- Créer un modèle Animal. 
- pour rendre le modèle disponible dans l’administration Django :
- dans admin.py : on tape  admin.site.register(Animal) .
+  Création du modèle Observation:
 
- ## 2.2.5– Ajouter des animaux et créer un fixture
+Créer un modele `Observation` dans `observo/models.py`.
+
+Le modèle contient :
+- date (DateField)
+- heure (TimeField)
+- latitude (FloatField)
+- longitude (FloatField)
+- description (TextField)
+- animal (ForeignKey vers Animal)
+
+Pour rendre le modele disponible dans l’administration Django :  
+dans `admin.py` : on tape 
+```python
+admin.site.register(Observation)
+```
+
+### Générer les migrations
+```bash
+python manage.py makemigrations
+```
+
+### Appliquer les migrations
+```bash
+python manage.py migrate
+```
+### Verifications
+-Lancer le serveur Django:
+```bash
+python manage.py runserver 0.0.0.0:8088
+```
+
+-Aller dans l’admin :
+```bash
+http://127.0.0.1:8088/admin/
+```
+## 2.3.2 : Ajouter des observations et créer un fixture
+
+Créer le fichier `observations.json` dans `observo/fixtures/`.
+
+Le fichier contient plus de 50 observations différentes, chacune avec :
+- une date
+- une heure
+- une latitude
+- une longitude
+- une description
+- un animal associé (clé étrangère)
 
 Commandes utilisées :
 
 ```bash
-# Créer le dossier fixtures
+# Créer le dossier fixtures 
 mkdir -p observo/fixtures
 
-# Créer le fichier animals.json avec les données fournies
+# Créer et remplir le fichier observations.json avec au moins 50 observations
 
 # Charger les données dans la base SQLite
-python manage.py loaddata animals
+python manage.py loaddata observations
+
+ #Verifications
+-Lancer le serveur Django:
+
+python manage.py runserver 0.0.0.0:8088
+-et taper sur
+ http://127.0.0.1:8088/admin/
+ 
+```
+## 2.3.3 : Vue et template pour les détails d'une observation
+
+Créer la vue `observ_detail` dans `observo/views.py`.
+
+Créer le template `observo/templates/observo/observ_detail.html`.
+
+Ajouter l’URL dans `observo/urls.py` et inclure dans `cc2/urls.py`.
+
+Exemple d’URL :  
+/observs/n où n est l’identifiant de l’observation.
+
+- Commandes / fichiers modifiés :
+```bash
+Créer la vue observ_detail dans observo/views.py
+Créer le template observo/templates/observo/observ_detail.html
+Ajouter l'URL /observs/n dans observo/urls.py
+Inclure les URLs dans cc2/urls.py
+```
+## 2.3.4 : Liste tabulaire des observations
+
+Créer la vue `observ_list` dans `observo/views.py`.
+
+Créer le template `observo/templates/observo/observ_list.html`.
+
+L’URL d’accès doit être `/observs`.
+
+La liste affiche :
+- le nom commun de l’animal observé
+- la date de l’observation
+- la localisation (latitude / longitude)
+- un lien vers la fiche détaillée de l’observation
+
+ Commandes / fichiers modifiés :
+```bash
+Créer la vue observ_list dans observo/views.py
+Créer le template observo/templates/observo/observ_list.html
+Ajouter l'URL /observs dans observo/urls.py
+Inclure les URLs dans cc2/urls.py 
+```
+## 2.3.5 : Ajouter une nouvelle observation via formulaire
+
+Créer le formulaire `ObservationForm` dans `observo/forms.py`.
+
+Créer la vue `new_observ` dans `observo/views.py`.
+
+Créer le template `observo/templates/observo/new_observ.html`.
+
+L’URL d’accès doit être `/new_observ`.
+
+Le formulaire permet d’ajouter :
+- la date
+- l’heure
+- la latitude
+- la longitude
+- la description
+- l’animal observé
+
+Commandes / fichiers modifiés :
+```bash
+Créer le formulaire ObservationForm dans observo/forms.py
+Créer la vue new_observ dans observo/views.py
+Créer le template observo/templates/observo/new_observ.html
+Ajouter l'URL /new_observ dans observo/urls.py
+Inclure les URLs dans cc2/urls.py 
 ```
 
+## 2.3.6 : Supprimer une observation
 
-## 2.2.6– Vue et template pour les détails d'un animal
-```
-# Créer la vue animal_detail dans observo/views.py
-# Créer le template observo/templates/observo/animal_detail.html
-# Ajouter l'URL dans observo/urls.py et inclure dans cc2/urls.py
+Créer la vue `delete_observ` dans `observo/views.py`.
+
+Créer le template `observo/templates/observo/delete_observ.html`.
+
+L’URL d’accès doit être `/delete_observ/n` où n est l’identifiant de l’observation.
+
+Une page de confirmation doit etre affichee avant la suppression.
+
+Ajouter un lien de suppression dans la liste des observations.
+
+Commandes / fichiers modifiés :
+```bash
+Créer la vue delete_observ dans observo/views.py
+Créer le template observo/templates/observo/delete_observ.html
+Ajouter l'URL /delete_observ/n dans observo/urls.py
+Inclure les URLs dans cc2/urls.py
+Ajouter un lien de suppression dans la liste des observations
 ```
 
-## 2.2.7 – Liste tabulaire des animaux
-```
+## 2.3.7 : Modifier une observation
 
-# Créer la vue animal_list dans observo/views.py
-# Créer le template observo/templates/observo/animal_list.html
-# Ajouter l'URL dans observo/urls.py
-```
-## 2.2.8 – Ajouter un nouvel animal via formulaire
-```
-# Créer le formulaire AnimalForm dans observo/forms.py
-# Créer la vue new_animal dans observo/views.py
-# Créer le template observo/templates/observo/new_animal.html
-# Ajouter l'URL /new_animal dans observo/urls.py
-```
-## Question 9 – Supprimer un animal
+Créer la vue `change_observ` dans `observo/views.py`.
 
-Commandes et étapes utilisées :
+Réutiliser le formulaire `ObservationForm` avec `instance` pour preremplir les champs.
 
-```
-# Créer la vue delete_animal dans observo/views.py
-# Créer le template observo/templates/observo/delete_animal.html
-# Ajouter l'URL /delete_animal/n dans observo/urls.py
-# Ajouter un lien de suppression dans le tableau de la liste des animaux
-```
-## Question 10 – Modifier un animal
+Créer le template `observo/templates/observo/change_observ.html`.
 
-Commandes et étapes utilisées :
+L’URL d’accès doit etre `/change_observ/n` ou n est l’identifiant de l’observation.
 
-```
-# Création de la vue change_animal
-# Réutilisation du formulaire AnimalForm avec instance
-# Création du template change_animal.html
-# Ajout de l'URL /change_animal/n
-# Ajout d'un lien de modification dans la liste des animaux
+Ajouter un lien de modification dans la liste des observations.
 
+Commandes / fichiers modifiés :
+```bash
+Créer la vue change_observ dans observo/views.py
+Réutiliser ObservationForm avec instance
+Créer le template observo/templates/observo/change_observ.html
+Ajouter l'URL /change_observ/n dans observo/urls.py
+Inclure les URLs dans cc2/urls.py
+Ajouter un lien de modification dans la liste des observations
 ```
-#  18.BARRE DE NAVIG:
+##  18.BARRE DE NAVIG:
 1. Création de `base.html` dans `observo/templates/observo/` :
    - Contient le **HTML de base**, l'en-tête `<head>` et le lien vers **Bootstrap 5.3**.
    - Contient une **navbar** avec les menus :
@@ -178,3 +292,19 @@ Commandes et étapes utilisées :
    - Boutons stylés : `btn btn-success`, `btn btn-secondary`, `btn btn-danger`.
    - Tables avec classes Bootstrap si besoin (`table table-striped` ou `table table-bordered`).
 
+### Tests réalisés
+
+- **Modèles**
+  - `Animal` : création d’un animal et vérification de son `nom_commun`.
+
+- **Vues**
+  - Page liste des animaux (`animal_list`)
+  - Page liste des observations (`liste_observations`) accessible après login
+  - Page d’inscription (`register`) existe et renvoie un status 200
+
+### Exécution
+
+Pour lancer les tests, utiliser :
+
+```bash
+python manage.py test
