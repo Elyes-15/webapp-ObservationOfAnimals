@@ -1,153 +1,102 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
     <title>{% block title %}Observations d'animaux{% endblock %}</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'about' %}"
-          >Observations Animaux</a
-        >
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNavDropdown"
-          aria-controls="navbarNavDropdown"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'about' %}">Observations Animaux</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <!-- À propos -->
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'about' %}">À propos</a>
-            </li>
+            <ul class="navbar-nav me-auto">
+                <!-- À propos -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">À propos</a>
+                </li>
 
-            <!-- Menu Animaux -->
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Animaux
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="{% url 'animal_list' %}"
-                    >Liste</a
-                  >
+                <!-- Menu Animaux (toujours visible) -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Animaux
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'animal_list' %}">Liste</a></li>
+                        {% if user.is_authenticated and user.profile.role == 'admin' %}
+                        <li><a class="dropdown-item" href="{% url 'new_animal' %}">Ajouter</a></li>
+                        {% endif %}
+                    </ul>
                 </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'new_animal' %}"
-                    >Ajouter</a
-                  >
-                </li>
-              </ul>
-            </li>
 
-            <!-- Menu Observations -->
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Observations
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="{% url 'liste_observations' %}"
-                    >Liste</a
-                  >
+                <!-- Menu Observations (seulement si connecté) -->
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Observations
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'liste_observations' %}">Liste</a></li>
+                        <li><a class="dropdown-item" href="{% url 'new_observ' %}">Ajouter</a></li>
+                    </ul>
                 </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'new_observ' %}"
-                    >Ajouter</a
-                  >
-                </li>
-              </ul>
-            </li>
-          </ul>
-
-          <!-- Partie authentification -->
-          <ul class="navbar-nav">
-            {% if user.is_authenticated %}
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                {{ user.username }} {% if user.profile %}
-                <span
-                  class="role-badge {% if user.profile.role == 'admin' %}role-admin{% else %}role-user{% endif %}"
-                >
-                  {{ user.profile.get_role_display }}
-                </span>
                 {% endif %}
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li>
-                  <form
-                    action="{% url 'logout' %}"
-                    method="post"
-                    style="display: inline"
-                  >
-                    {% csrf_token %}
-                    <button type="submit" class="dropdown-item">
-                      Déconnexion
-                    </button>
-                  </form>
-                </li>
-              </ul>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Connexion</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'register' %}">Inscription</a>
-            </li>
-            {% endif %}
-          </ul>
+            </ul>
+
+            <!-- Section authentification (à droite) -->
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                            {% if user.profile %}
+                                <span class="role-badge {% if user.profile.role == 'admin' %}role-admin{% else %}role-user{% endif %}">
+                                    {{ user.profile.get_role_display }}
+                                </span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Déconnexion</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Connexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Inscription</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-      </div>
-    </nav>
-
-    <div class="container">
-      {% if messages %} {% for message in messages %}
-      <div
-        class="alert alert-{{ message.tags }} alert-dismissible fade show"
-        role="alert"
-      >
-        {{ message }}
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-      {% endfor %} {% endif %} {% block content %} {% endblock %}
     </div>
+</nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+<div class="container">
+    <!-- Messages Django -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

@@ -1,26 +1,50 @@
-{% extends 'observo/base.html' %}
-
-{% block title %}Détails de l'observation {{ observation.id }}{% endblock %}
-
-{% block content %}
+{% extends 'observo/base.html' %} {% block title %}Détails de l'observation {{
+observation.id }}{% endblock %} {% block content %}
 <div class="container mt-4">
-    <h1>Détails de l’observation {{ observation.id }}</h1>
+  <h1>Détails de l'observation {{ observation.id }}</h1>
 
-    <div class="card mt-3">
-        <div class="card-body">
-            <h5 class="card-title">{{ observation.animal.nom_commun }}</h5>
-            <p class="card-text"><strong>Date :</strong> {{ observation.date }}</p>
-            <p class="card-text"><strong>Heure :</strong> {{ observation.heure }}</p>
-            <p class="card-text"><strong>Latitude :</strong> {{ observation.latitude }}</p>
-            <p class="card-text"><strong>Longitude :</strong> {{ observation.longitude }}</p>
-            <p class="card-text"><strong>Description :</strong> {{ observation.description }}</p>
+  <div class="card mt-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ observation.animal.nom_commun }}</h5>
+      <p class="card-text"><strong>Date :</strong> {{ observation.date }}</p>
+      <p class="card-text"><strong>Heure :</strong> {{ observation.heure }}</p>
+      <p class="card-text">
+        <strong>Latitude :</strong> {{ observation.latitude }}
+      </p>
+      <p class="card-text">
+        <strong>Longitude :</strong> {{ observation.longitude }}
+      </p>
+      <p class="card-text">
+        <strong>Description :</strong> {{ observation.description }}
+      </p>
 
-            <div class="mt-3">
-                <a class="btn btn-primary" href="{% url 'liste_observations' %}">Retour à la liste</a>
-                <a class="btn btn-warning" href="{% url 'change_observ' observation.id %}">Modifier</a>
-                <a class="btn btn-danger" href="{% url 'delete_observ' observation.id %}">Supprimer</a>
-            </div>
-        </div>
+      <div class="mt-3">
+        <a class="btn btn-primary" href="{% url 'liste_observations' %}"
+          >Retour à la liste</a
+        >
+        <a
+          class="btn btn-warning"
+          href="{% url 'change_observ' observation.id %}"
+          >Modifier</a
+        >
+        <a
+          class="btn btn-danger"
+          href="{% url 'delete_observ' observation.id %}"
+          >Supprimer</a
+        >
+      </div>
     </div>
+  </div>
+  {% if request.user == observation.utilisateur or request.user.profile.role ==
+  'admin' %}
+  <div class="mt-3">
+    <a href="{% url 'change_observ' observation.id %}" class="btn btn-warning"
+      >Modifier</a
+    >
+    <a href="{% url 'delete_observ' observation.id %}" class="btn btn-danger"
+      >Supprimer</a
+    >
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

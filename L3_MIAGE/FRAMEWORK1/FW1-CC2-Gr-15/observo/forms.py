@@ -1,9 +1,8 @@
-from .models import Animal
 from django import forms
 from django.core.validators import MinValueValidator
-from .models import Observation, Profile
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from .models import Animal, Observation, Profile
 
 
 class ObservationForm(forms.ModelForm):
@@ -20,6 +19,15 @@ class ObservationForm(forms.ModelForm):
         model = Observation
         fields = ['animal', 'date', 'heure',
                   'latitude', 'longitude', 'description']
+        exclude = ['utilisateur']
+
+    def save(self, commit=True, user=None):
+        observation = super().save(commit=False)
+        if user:
+            observation.utilisateur = user
+        if commit:
+            observation.save()
+        return observation
 
 
 class AnimalForm(forms.ModelForm):
@@ -39,33 +47,43 @@ class AnimalForm(forms.ModelForm):
         ]
 
 
-class UserRegistrationForm(forms.ModelForm):
-    password1 = forms.CharField(
-        label='Mot de passe', widget=forms.PasswordInput)
-    password2 = forms.CharField(
-        label='Confirmation du mot de passe', widget=forms.PasswordInput)
-    role = forms.ChoiceField(
-        label='Rôle', choices=Profile.ROLE_CHOICES, initial='user')
+class CustomUserCreationForm(forms.Form):
+    username = forms.CharField(max_length=150, required=True)
+    email = forms.EmailField(required=True)
+    password1 = forms.CharField(widget=forms.PasswordInput, required=True)
+    password2 = forms.CharField(widget=forms.PasswordInput, required=True)
+    role = forms.ChoiceField(choices=Profile.ROLE_CHOICES, initial='user')
 
-    class Meta:
-        model = User
-        fields = ['username', 'email']
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
 
-    def clean_password2(self):
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
-        if password1 and password2 and password1 != password2:
+        if password1 != password2:
             raise forms.ValidationError(
-                "Les mots de passe ne correspondent pas.")
-        return password2
+                "Les mots de passe ne correspondent pas")
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data['password1'])
-        if commit:
-            user.save()
-            # Crée le profil associé
-            Profile.objects.create(user=user, role=self.cleaned_data['role'])
+        # Vérifie si l'username existe déjà
+        username = cleaned_data.get("username")
+        from django.contrib.auth.models import User
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Ce nom d'utilisateur existe déjà")
+
+        return cleaned_data
+
+    def save(self):
+        from django.contrib.auth.models import User
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        password = self.cleaned_data['password1']
+        role = self.cleaned_data['role']
+
+        # Crée l'utilisateur
+        user = User.objects.create_user(username, email, password)
+
+        # Crée le profil
+        Profile.objects.create(user=user, role=role)
+
         return user
 
 
