@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier un animal</title>
+</head>
+<body>
+    <h1>Modifier l'animal : {{ animal.nom_commun }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Enregistrer</button>
+        <a href="{% url 'animal_list' %}">Annuler</a>
+    </form>
+</body>
+</html>
