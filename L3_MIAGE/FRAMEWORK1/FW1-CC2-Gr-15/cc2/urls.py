@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path , include
 from observo import views
 
 urlpatterns = [
@@ -8,3 +8,5 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('', include('observo.urls')),
 ]
+
+

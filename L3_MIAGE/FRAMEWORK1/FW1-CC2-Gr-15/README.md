@@ -151,3 +151,30 @@ Commandes et étapes utilisées :
 # Ajout d'un lien de modification dans la liste des animaux
 
 ```
+#  18.BARRE DE NAVIG:
+1. Création de `base.html` dans `observo/templates/observo/` :
+   - Contient le **HTML de base**, l'en-tête `<head>` et le lien vers **Bootstrap 5.3**.
+   - Contient une **navbar** avec les menus :
+     - À propos
+     - Animaux (Liste, Ajouter)
+     - Observations (Liste, Ajouter)
+   - Toutes les autres pages héritent de `base.html` avec `{% extends 'observo/base.html' %}`.
+
+2. Mise à jour des templates existants pour hériter de `base.html` :
+   - `about.html`
+   - `animal_list.html`
+   - `animal_detail.html`
+   - `new_animal.html`
+   - `change_animal.html`
+   - `delete_animal.html`
+   - `liste_observations.html`
+   - `detail_observation.html`
+   - `new_observ.html`
+   - `change_observ.html`
+   - `delete_observ.html`
+
+3. Utilisation de **Bootstrap** pour les formulaires et tableaux :
+   - Formulaires dans des `card` avec `mt-3` pour espacement.
+   - Boutons stylés : `btn btn-success`, `btn btn-secondary`, `btn btn-danger`.
+   - Tables avec classes Bootstrap si besoin (`table table-striped` ou `table table-bordered`).
+

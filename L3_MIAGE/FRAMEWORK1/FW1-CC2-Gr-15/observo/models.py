@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Animal(models.Model):
     nom_commun = models.CharField(max_length=100)
@@ -14,3 +16,34 @@ class Animal(models.Model):
 
     def __str__(self):
         return self.nom_commun
+
+
+class Observation(models.Model):
+    date = models.DateField()
+    heure = models.TimeField()
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
+    utilisateur = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"Observation de {self.animal.nom_commun} le {self.date}"
+
+
+class Profile(models.Model):
+    ROLE_CHOICES = [
+        ('admin', 'Administrateur'),
+        ('user', 'Utilisateur'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(
+        max_length=10, choices=ROLE_CHOICES)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.get_role_display()}"
+
+    def get_role_display(self):
+        return dict(self.ROLE_CHOICES).get(self.role, self.role)

@@ -1,10 +1,10 @@
 {% extends 'observo/base.html' %}
 
-{% block title %}Ajouter un nouvel animal{% endblock %}
+{% block title %}Ajouter une nouvelle observation{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Ajouter un nouvel animal</h1>
+    <h1>Ajouter une nouvelle observation</h1>
 
     <div class="card mt-3">
         <div class="card-body">
@@ -12,7 +12,7 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="btn btn-success">Ajouter</button>
-                <a class="btn btn-secondary" href="{% url 'animal_list' %}">Retour à la liste</a>
+                <a class="btn btn-secondary" href="{% url 'liste_observations' %}">Retour à la liste</a>
             </form>
         </div>
     </div>

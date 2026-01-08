@@ -1,20 +1,33 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Détails de l'animal</title>
-</head>
-<body>
+{% extends 'observo/base.html' %}
+
+{% block title %}Détails de l'animal {{ animal.nom_commun }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
     <h1>{{ animal.nom_commun }} ({{ animal.nom_savant }})</h1>
-    <ul>
-        <li><strong>Embranchement :</strong> {{ animal.embranchement }}</li>
-        <li><strong>Classe :</strong> {{ animal.classe }}</li>
-        <li><strong>Ordre :</strong> {{ animal.ordre }}</li>
-        {% if animal.sous_ordre %}<li><strong>Sous-ordre :</strong> {{ animal.sous_ordre }}</li>{% endif %}
-        <li><strong>Famille :</strong> {{ animal.famille }}</li>
-        <li><strong>Genre :</strong> {{ animal.genre }}</li>
-        <li><strong>Statut IUCN :</strong> {{ animal.statut_iucn }}</li>
-    </ul>
-    <p>{{ animal.description }}</p>
-</body>
-</html>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Embranchement :</strong> {{ animal.embranchement }}</li>
+                <li class="list-group-item"><strong>Classe :</strong> {{ animal.classe }}</li>
+                <li class="list-group-item"><strong>Ordre :</strong> {{ animal.ordre }}</li>
+                {% if animal.sous_ordre %}
+                <li class="list-group-item"><strong>Sous-ordre :</strong> {{ animal.sous_ordre }}</li>
+                {% endif %}
+                <li class="list-group-item"><strong>Famille :</strong> {{ animal.famille }}</li>
+                <li class="list-group-item"><strong>Genre :</strong> {{ animal.genre }}</li>
+                <li class="list-group-item"><strong>Statut IUCN :</strong> {{ animal.statut_iucn }}</li>
+            </ul>
+
+            <p class="mt-3">{{ animal.description }}</p>
+
+            <div class="mt-3">
+                <a class="btn btn-primary" href="{% url 'animal_list' %}">Retour à la liste</a>
+                <a class="btn btn-warning" href="{% url 'change_animal' animal.id %}">Modifier</a>
+                <a class="btn btn-danger" href="{% url 'delete_animal' animal.id %}">Supprimer</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

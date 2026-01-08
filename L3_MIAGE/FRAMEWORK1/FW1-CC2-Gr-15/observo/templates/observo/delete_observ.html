@@ -1,0 +1,18 @@
+{% extends 'observo/base.html' %}
+
+{% block title %}Supprimer l'observation #{{ observation.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Supprimer l'observation #{{ observation.id }}</h1>
+    <div class="alert alert-danger mt-3" role="alert">
+        Voulez-vous vraiment supprimer cette observation ? Cette action est <strong>irréversible</strong>.
+    </div>
+
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a class="btn btn-secondary" href="{% url 'liste_observations' %}">Annuler</a>
+    </form>
+</div>
+{% endblock %}
