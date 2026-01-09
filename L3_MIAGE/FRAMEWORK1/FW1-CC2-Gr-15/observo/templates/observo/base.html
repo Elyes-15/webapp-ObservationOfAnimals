@@ -16,12 +16,11 @@
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto">
-                <!-- À propos -->
+               
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">À propos</a>
                 </li>
 
-                <!-- Menu Animaux (toujours visible) -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Animaux
@@ -34,7 +33,7 @@
                     </ul>
                 </li>
 
-                <!-- Menu Observations (seulement si connecté) -->
+
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -48,7 +47,7 @@
                 {% endif %}
             </ul>
 
-            <!-- Section authentification (à droite) -->
+            
             <ul class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
@@ -83,7 +82,7 @@
 </nav>
 
 <div class="container">
-    <!-- Messages Django -->
+    
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">

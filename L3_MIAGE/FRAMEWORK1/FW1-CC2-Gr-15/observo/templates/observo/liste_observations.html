@@ -5,7 +5,22 @@
 {% block content %}
 <h1>Liste des observations</h1>
 
-<table class="table table-striped table-bordered">
+
+<div class="mb-3">
+  <label for="animalSelect" class="form-label">Filtrer par animal :</label>
+  <select id="animalSelect" class="form-select">
+    <option value="">-- Tous les animaux --</option>
+    {% for animal in animaux %}
+      <option value="{{ animal.id }}">{{ animal.nom_commun }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+
+<div id="map" style="height: 500px; margin-bottom: 20px;"></div>
+
+
+<table class="table table-striped table-bordered" id="obsTable">
     <thead>
         <tr>
             <th>Animal</th>
@@ -16,15 +31,15 @@
     </thead>
     <tbody>
         {% for observation in observations %}
-        <tr>
+        <tr data-animal-id="{{ observation.animal.id }}">
             <td>{{ observation.animal.nom_commun }}</td>
             <td>{{ observation.date }} {{ observation.heure }}</td>
             <td>{{ observation.latitude }}, {{ observation.longitude }}</td>
             <td>
                 <a href="{% url 'detail_observation' observation.id %}" class="btn btn-info btn-sm">Voir</a>
-                {% if request.user == observation.utilisateur or request.user.profile.role == 'admin' %}
-                <a href="{% url 'change_observ' observation.id %}" class="btn btn-warning btn-sm">Modifier</a>
-                <a href="{% url 'delete_observ' observation.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                {% if request.user.is_superuser or observation.utilisateur == request.user %}
+                    <a href="{% url 'change_observ' observation.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{% url 'delete_observ' observation.id %}" class="btn btn-danger btn-sm">Supprimer</a>
                 {% endif %}
             </td>
         </tr>
@@ -41,4 +56,58 @@
     Aucune observation à afficher.
 </div>
 {% endif %}
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    
+    var map = L.map('map').setView([46.6, 2.5], 6);
+
+   
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    var markers = [];
+    {% for observation in observations %}
+        {% if observation.latitude and observation.longitude %}
+        var marker{{ observation.id }} = L.marker([{{ observation.latitude }}, {{ observation.longitude }}])
+            .bindPopup(
+                "<b>{{ observation.animal.nom_commun }}</b><br>" +
+                "Date: {{ observation.date }} {{ observation.heure }}<br>" +
+                "Description: {{ observation.description|default:'Aucune'|escapejs }}"
+            );
+        marker{{ observation.id }}.animalId = {{ observation.animal.id }};
+        marker{{ observation.id }}.addTo(map);
+        markers.push(marker{{ observation.id }});
+        {% endif %}
+    {% endfor %}
+
+    var select = document.getElementById('animalSelect');
+    select.addEventListener('change', function() {
+        var animalId = this.value;
+
+       
+        markers.forEach(function(marker) {
+            if (!animalId || marker.animalId == animalId) {
+                if (!map.hasLayer(marker)) marker.addTo(map);
+            } else {
+                if (map.hasLayer(marker)) map.removeLayer(marker);
+            }
+        });
+
+    
+        var rows = document.querySelectorAll('#obsTable tbody tr');
+        rows.forEach(function(row) {
+            if (!animalId || row.getAttribute('data-animal-id') == animalId) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 {% endblock %}

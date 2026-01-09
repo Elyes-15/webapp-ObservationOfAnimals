@@ -1,5 +1,4 @@
 from django import forms
-from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import Animal, Observation, Profile
@@ -7,18 +6,23 @@ from .models import Animal, Observation, Profile
 
 class ObservationForm(forms.ModelForm):
     date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'})
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
     )
     heure = forms.TimeField(
-        widget=forms.TimeInput(attrs={'type': 'time'})
+        widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'})
     )
-    latitude = forms.FloatField(validators=[MinValueValidator(0)])
-    longitude = forms.FloatField(validators=[MinValueValidator(0)])
+    latitude = forms.FloatField(
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+        label="Latitude"
+    )
+    longitude = forms.FloatField(
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': 'any'}),
+        label="Longitude"
+    )
 
     class Meta:
         model = Observation
-        fields = ['animal', 'date', 'heure',
-                  'latitude', 'longitude', 'description']
+        fields = ['animal', 'date', 'heure', 'latitude', 'longitude', 'description']
         exclude = ['utilisateur']
 
     def save(self, commit=True, user=None):
@@ -45,6 +49,18 @@ class AnimalForm(forms.ModelForm):
             'statut_iucn',
             'description',
         ]
+        widgets = {
+            'nom_commun': forms.TextInput(attrs={'class': 'form-control'}),
+            'nom_savant': forms.TextInput(attrs={'class': 'form-control'}),
+            'embranchement': forms.TextInput(attrs={'class': 'form-control'}),
+            'classe': forms.TextInput(attrs={'class': 'form-control'}),
+            'ordre': forms.TextInput(attrs={'class': 'form-control'}),
+            'sous_ordre': forms.TextInput(attrs={'class': 'form-control'}),
+            'famille': forms.TextInput(attrs={'class': 'form-control'}),
+            'genre': forms.TextInput(attrs={'class': 'form-control'}),
+            'statut_iucn': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -59,8 +75,8 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class SimpleUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    role = forms.ChoiceField(choices=Profile.ROLE_CHOICES, initial='user')
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    role = forms.ChoiceField(choices=Profile.ROLE_CHOICES, initial='user', widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
@@ -69,10 +85,7 @@ class SimpleUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
-
         if commit:
             user.save()
-            # Crée le profil
             Profile.objects.create(user=user, role=self.cleaned_data['role'])
-
         return user

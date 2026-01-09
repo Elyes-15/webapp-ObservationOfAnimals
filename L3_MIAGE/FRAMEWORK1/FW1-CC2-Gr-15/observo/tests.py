@@ -11,14 +11,14 @@ class TestModeleAnimal(TestCase):
         )
         self.assertEqual(animal.nom_commun, "Renard")
 
-#Tests des vues Animaux
+
 class TestVuesAnimaux(TestCase):
 
     def test_page_liste_animaux(self):
         response = self.client.get(reverse("animal_list"))
         self.assertEqual(response.status_code, 200)
 
-#Tests des Observations
+
 
 class TestObservations(TestCase):
 
@@ -33,7 +33,7 @@ class TestObservations(TestCase):
         response = self.client.get(reverse("liste_observations"))
         self.assertEqual(response.status_code, 200)
 
-#class TestInscription:
+
 
     def test_page_inscription_existe(self):
         response = self.client.get(reverse("register"))

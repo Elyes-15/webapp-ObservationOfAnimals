@@ -1,0 +1,15 @@
+<div id="map" style="height:500px;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+var map = L.map('map').setView([46.6, 2.5], 6);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+{% for obs in observations %}
+L.marker([{{ obs.latitude }}, {{ obs.longitude }}])
+ .bindPopup("<b>{{ obs.animal.nom_commun }}</b><br>{{ obs.description }}<br>{{ obs.date }} {{ obs.heure }}")
+ .addTo(map);
+{% endfor %}
+</script>

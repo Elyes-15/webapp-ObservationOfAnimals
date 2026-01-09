@@ -404,3 +404,85 @@ Pour lancer les tests, utiliser :
 ```bash
 python manage.py test
 >>>>>>> tests
+
+# Question23: 
+1.1/Création de la carte des observations avec barre de recherche par animal:
+vue:
+@login_required
+def liste_observations(request):
+    if est_admin(request.user):
+        observations = Observation.objects.all().order_by('-date', '-heure')
+    else:
+        observations = Observation.objects.filter(utilisateur=request.user).order_by('-date', '-heure')
+    
+    # Récupération des animaux pour le filtre
+    animaux = Animal.objects.all().order_by('nom_commun')
+
+    return render(request, 'observo/liste_observations.html', {
+        'observations': observations,
+        'animaux': animaux,
+    })
+
+Template:liste_observations:
+**inclure la carte: <div id="map" style="height: 500px; margin-bottom: 20px;"></div>
+**Ajouter une barre de recherche / filtre :
+<select id="animalFilter" class="form-select mb-3">
+    <option value="">-- Choisir un animal --</option>
+    {% for animal in animaux %}
+        <option value="{{ animal.nom_commun }}">{{ animal.nom_commun }}</option>
+    {% endfor %}
+</select>
+** Leaflet:
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+**markers:
+<script>
+    // Création de la carte centrée sur la France
+    var map = L.map('map').setView([46.6, 2.5], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    // Récupération des observations depuis Django
+    var observations = [
+        {% for obs in observations %}
+        {
+            animal: "{{ obs.animal.nom_commun }}",
+            lat: {{ obs.latitude }},
+            lng: {{ obs.longitude }},
+            date: "{{ obs.date }}",
+            heure: "{{ obs.heure }}",
+            description: "{{ obs.description|default:'Aucune'|escapejs }}"
+        },
+        {% endfor %}
+    ];
+
+    var markers = [];
+
+    observations.forEach(function(obs) {
+        var marker = L.marker([obs.lat, obs.lng])
+            .addTo(map)
+            .bindPopup(
+                "<b>" + obs.animal + "</b><br>" +
+                "Date: " + obs.date + " " + obs.heure + "<br>" +
+                "Description: " + obs.description
+            );
+        marker.animal = obs.animal;  // pour filtrage
+        markers.push(marker);
+    });
+
+    // Filtrage par animal
+    var select = document.getElementById('animalFilter');
+    select.addEventListener('change', function() {
+        var selected = this.value;
+        markers.forEach(function(marker) {
+            if (!selected || marker.animal === selected) {
+                marker.addTo(map);
+            } else {
+                map.removeLayer(marker);
+            }
+        });
+    });
+</script>
+
