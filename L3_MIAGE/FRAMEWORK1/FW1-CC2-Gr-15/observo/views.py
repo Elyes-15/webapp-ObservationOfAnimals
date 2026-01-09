@@ -7,7 +7,12 @@ from django.http import JsonResponse
 from .models import Observation, Animal, Profile
 from .forms import ObservationForm, AnimalForm, CustomAuthenticationForm, SimpleUserCreationForm
 from django.contrib.auth.models import User
-
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from django.db import models
+from django.db.models import Count
+from django.db import models
+from django.db.models import Count
 
 
 def est_admin(user):
@@ -22,6 +27,7 @@ def est_admin(user):
         create_profile_if_missing(user)
         return False
 
+
 def peut_modifier_observation(user, observation):
     """Vérifie si l'utilisateur peut modifier/supprimer une observation."""
     if not user.is_authenticated:
@@ -29,6 +35,7 @@ def peut_modifier_observation(user, observation):
     if est_admin(user):
         return True
     return observation.utilisateur == user if observation.utilisateur else False
+
 
 def create_profile_if_missing(user):
     """Crée un profil pour un utilisateur s'il n'en a pas."""
@@ -38,19 +45,19 @@ def create_profile_if_missing(user):
         return Profile.objects.create(user=user, role='user')
 
 
-
 def about(request):
     return render(request, 'observo/about.html')
-
 
 
 def animal_list(request):
     animals = Animal.objects.all()
     return render(request, 'observo/animal_list.html', {'animals': animals})
 
+
 def animal_detail(request, animal_id):
     animal = get_object_or_404(Animal, pk=animal_id)
     return render(request, 'observo/animal_detail.html', {'animal': animal})
+
 
 @user_passes_test(est_admin)
 def new_animal(request):
@@ -63,6 +70,7 @@ def new_animal(request):
     else:
         form = AnimalForm()
     return render(request, 'observo/new_animal.html', {'form': form})
+
 
 @user_passes_test(est_admin)
 def change_animal(request, animal_id):
@@ -77,6 +85,7 @@ def change_animal(request, animal_id):
         form = AnimalForm(instance=animal)
     return render(request, 'observo/change_animal.html', {'form': form, 'animal': animal})
 
+
 @user_passes_test(est_admin)
 def delete_animal(request, animal_id):
     animal = get_object_or_404(Animal, pk=animal_id)
@@ -87,15 +96,16 @@ def delete_animal(request, animal_id):
     return render(request, 'observo/delete_animal.html', {'animal': animal})
 
 
-
 @login_required
 def liste_observations(request):
     """Affiche toutes les observations."""
     if est_admin(request.user):
         observations = Observation.objects.all().order_by('-date', '-heure')
     else:
-        observations = Observation.objects.filter(utilisateur=request.user).order_by('-date', '-heure')
+        observations = Observation.objects.filter(
+            utilisateur=request.user).order_by('-date', '-heure')
     return render(request, 'observo/liste_observations.html', {'observations': observations})
+
 
 @login_required
 def detail_observation(request, id):
@@ -104,6 +114,7 @@ def detail_observation(request, id):
         raise PermissionDenied("Vous n'avez pas accès à cette observation.")
     return render(request, 'observo/detail_observation.html', {'observation': observation})
 
+
 @login_required
 def new_observ(request):
     if request.method == 'POST':
@@ -111,37 +122,40 @@ def new_observ(request):
         if form.is_valid():
             form.save(user=request.user)
             messages.success(request, "Observation ajoutée avec succès !")
-            return redirect('liste_observations') 
+            return redirect('liste_observations')
     else:
         form = ObservationForm()
     return render(request, 'observo/new_observ.html', {'form': form})
+
 
 @login_required
 def change_observ(request, id):
     observation = get_object_or_404(Observation, pk=id)
     if not peut_modifier_observation(request.user, observation):
-        raise PermissionDenied("Vous ne pouvez pas modifier cette observation.")
+        raise PermissionDenied(
+            "Vous ne pouvez pas modifier cette observation.")
     if request.method == 'POST':
         form = ObservationForm(request.POST, instance=observation)
         if form.is_valid():
             form.save()
             messages.success(request, "Observation modifiée avec succès !")
-            return redirect('liste_observations')  
+            return redirect('liste_observations')
     else:
         form = ObservationForm(instance=observation)
     return render(request, 'observo/change_observ.html', {'form': form, 'observation': observation})
+
 
 @login_required
 def delete_observ(request, id):
     observation = get_object_or_404(Observation, pk=id)
     if not peut_modifier_observation(request.user, observation):
-        raise PermissionDenied("Vous ne pouvez pas supprimer cette observation.")
+        raise PermissionDenied(
+            "Vous ne pouvez pas supprimer cette observation.")
     if request.method == 'POST':
         observation.delete()
         messages.success(request, "Observation supprimée avec succès !")
-        return redirect('liste_observations')  
+        return redirect('liste_observations')
     return render(request, 'observo/delete_observ.html', {'observation': observation})
-
 
 
 def register_view(request):
@@ -156,6 +170,7 @@ def register_view(request):
         form = SimpleUserCreationForm()
     return render(request, 'observo/register.html', {'form': form})
 
+
 def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
@@ -167,6 +182,7 @@ def login_view(request):
     else:
         form = CustomAuthenticationForm()
     return render(request, 'observo/login.html', {'form': form})
+
 
 @login_required
 def logout_view(request):
@@ -181,13 +197,74 @@ def liste_observations(request):
     if est_admin(request.user):
         observations = Observation.objects.all().order_by('-date', '-heure')
     else:
-        observations = Observation.objects.filter(utilisateur=request.user).order_by('-date', '-heure')
-    
-  
+        observations = Observation.objects.filter(
+            utilisateur=request.user).order_by('-date', '-heure')
+
     animaux = Animal.objects.all().order_by('nom_commun')
 
     return render(request, 'observo/liste_observations.html', {
         'observations': observations,
-        'animaux': animaux, 
+        'animaux': animaux,
     })
 
+
+def stats_view(request):
+    observations = Observation.objects.all()
+
+    # Statistiques globales
+    total_observations = observations.count()
+    total_especes = observations.values('animal').distinct().count()
+
+    animal_plus = (
+        observations
+        .values('animal__nom_commun')
+        .annotate(total=Count('id'))
+        .order_by('-total')
+        .first()
+    )
+    animal_plus_observe = animal_plus['animal__nom_commun'] if animal_plus else "Aucun"
+
+    mois_plus = (
+        observations
+        .annotate(mois=TruncMonth('date'))
+        .values('mois')
+        .annotate(total=Count('id'))
+        .order_by('-total')
+        .first()
+    )
+    mois_plus_actif = mois_plus['mois'].strftime(
+        "%B %Y") if mois_plus else "Aucun"
+
+    # Observations par mois
+    obs_par_mois = (
+        observations
+        .annotate(mois=TruncMonth('date'))
+        .values('mois')
+        .annotate(total=Count('id'))
+        .order_by('mois')
+    )
+
+    # Observations par statut IUCN
+    obs_par_iucn = (
+        observations
+        .values(statut=models.F('animal__statut_iucn'))
+        .annotate(total=Count('id'))
+    )
+
+    # Observations par animal
+    obs_par_animal = (
+        observations
+        .values('animal__nom_commun')
+        .annotate(total=Count('id'))
+        .order_by('-total')
+    )
+
+    return render(request, 'observo/stats.html', {
+        'total_observations': total_observations,
+        'total_especes': total_especes,
+        'animal_plus_observe': animal_plus_observe,
+        'mois_plus_actif': mois_plus_actif,
+        'obs_par_mois': obs_par_mois,
+        'obs_par_iucn': obs_par_iucn,
+        'obs_par_animal': obs_par_animal,
+    })
