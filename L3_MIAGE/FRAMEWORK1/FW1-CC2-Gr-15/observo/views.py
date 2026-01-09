@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Observation, Animal, Profile
-from .forms import ObservationForm, AnimalForm, CustomAuthenticationForm, CustomUserCreationForm
+from .forms import ObservationForm, AnimalForm, CustomAuthenticationForm, SimpleUserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
@@ -10,9 +10,17 @@ from django.contrib import messages
 
 def est_admin(user):
     """Vérifie si l'utilisateur est administrateur."""
+    if not user.is_authenticated:
+        return False
+    # Vérifie d'abord si c'est un superuser Django
+    if user.is_superuser:
+        return True
+    # Ensuite vérifie le rôle dans le profil
     try:
-        return user.is_authenticated and user.profile.role == 'admin'
-    except Profile.DoesNotExist:
+        return user.profile.role == 'admin'
+    except (Profile.DoesNotExist, AttributeError):
+        # Crée un profil par défaut si manquant
+        create_profile_if_missing(user)
         return False
 
 
@@ -22,7 +30,7 @@ def peut_modifier_observation(user, observation):
         return False
     if est_admin(user):
         return True
-    return observation.utilisateur == user
+    return observation.utilisateur == user if observation.utilisateur else False
 
 
 def about(request):
@@ -52,7 +60,10 @@ def new_observ(request):
     if request.method == 'POST':
         form = ObservationForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Passez l'utilisateur connecté au formulaire
+            observation = form.save(commit=False, user=request.user)
+            observation.utilisateur = request.user
+            observation.save()
             return redirect('liste_observations')
     else:
         form = ObservationForm()
@@ -64,15 +75,15 @@ def new_observ(request):
 def delete_observ(request, id):
     observation = get_object_or_404(Observation, pk=id)
 
-    if request.method == 'POST':
-        observation.delete()
-        if not peut_modifier_observation(request.user, observation):
-            raise PermissionDenied(
-                "Vous ne pouvez pas supprimer cette observation.")
+    # Vérification des permissions AVANT toute action
+    if not peut_modifier_observation(request.user, observation):
+        raise PermissionDenied(
+            "Vous ne pouvez pas supprimer cette observation.")
 
     if request.method == 'POST':
         observation.delete()
         return redirect('liste_observations')
+
     return render(request, 'observo/delete_observ.html', {'observation': observation})
 
 
@@ -147,14 +158,34 @@ def change_animal(request, animal_id):
 
 def register_view(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = SimpleUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Compte créé avec succès !')
-            return redirect('animal_list')
+            try:
+                # 1. Crée l'utilisateur SANS profil
+                user = form.save()
+
+                # 2. Crée le profil MANUELLEMENT avec get_or_create
+                Profile.objects.get_or_create(
+                    user=user,
+                    defaults={'role': form.cleaned_data['role']}
+                )
+
+                # 3. Connecte l'utilisateur
+                login(request, user)
+                messages.success(request, 'Compte créé avec succès !')
+                return redirect('animal_list')
+
+            except IntegrityError as e:
+                # Gestion spécifique de l'erreur d'intégrité
+                messages.error(request, f"Erreur de base de données: {str(e)}")
+                return render(request, 'observo/register.html', {'form': form})
+
+            except Exception as e:
+                # Gestion des autres erreurs
+                messages.error(request, f"Erreur inattendue: {str(e)}")
+                return render(request, 'observo/register.html', {'form': form})
     else:
-        form = CustomUserCreationForm()
+        form = SimpleUserCreationForm()
     return render(request, 'observo/register.html', {'form': form})
 
 
@@ -186,3 +217,35 @@ def logout_view(request):
     logout(request)
     messages.info(request, "Vous avez été déconnecté.")
     return redirect('animal_list')
+
+
+def create_profile_if_missing(user):
+    """Crée un profil pour un utilisateur s'il n'en a pas."""
+    try:
+        profile = Profile.objects.get(user=user)
+        return profile
+    except Profile.DoesNotExist:
+        # Crée un profil par défaut avec rôle 'user'
+        profile = Profile.objects.create(user=user, role='user')
+        return profile
+
+
+@login_required
+def debug_profile(request):
+    """Vue de débogage pour vérifier les profils."""
+    user = request.user
+    try:
+        profile = Profile.objects.get(user=user)
+        role = profile.role
+        created = False
+    except Profile.DoesNotExist:
+        profile = Profile.objects.create(user=user, role='user')
+        role = profile.role
+        created = True
+
+    return render(request, 'observo/debug_profile.html', {
+        'user': user,
+        'profile': profile,
+        'role': role,
+        'created': created,
+    })

@@ -47,46 +47,6 @@ class AnimalForm(forms.ModelForm):
         ]
 
 
-class CustomUserCreationForm(forms.Form):
-    username = forms.CharField(max_length=150, required=True)
-    email = forms.EmailField(required=True)
-    password1 = forms.CharField(widget=forms.PasswordInput, required=True)
-    password2 = forms.CharField(widget=forms.PasswordInput, required=True)
-    role = forms.ChoiceField(choices=Profile.ROLE_CHOICES, initial='user')
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get("password1")
-        password2 = cleaned_data.get("password2")
-
-        if password1 != password2:
-            raise forms.ValidationError(
-                "Les mots de passe ne correspondent pas")
-
-        # Vérifie si l'username existe déjà
-        username = cleaned_data.get("username")
-        from django.contrib.auth.models import User
-        if User.objects.filter(username=username).exists():
-            raise forms.ValidationError("Ce nom d'utilisateur existe déjà")
-
-        return cleaned_data
-
-    def save(self):
-        from django.contrib.auth.models import User
-        username = self.cleaned_data['username']
-        email = self.cleaned_data['email']
-        password = self.cleaned_data['password1']
-        role = self.cleaned_data['role']
-
-        # Crée l'utilisateur
-        user = User.objects.create_user(username, email, password)
-
-        # Crée le profil
-        Profile.objects.create(user=user, role=role)
-
-        return user
-
-
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
         label="Nom d'utilisateur",
@@ -96,3 +56,23 @@ class CustomAuthenticationForm(AuthenticationForm):
         label="Mot de passe",
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
+
+
+class SimpleUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    role = forms.ChoiceField(choices=Profile.ROLE_CHOICES, initial='user')
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2', 'role')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+
+        if commit:
+            user.save()
+            # Crée le profil
+            Profile.objects.create(user=user, role=self.cleaned_data['role'])
+
+        return user
