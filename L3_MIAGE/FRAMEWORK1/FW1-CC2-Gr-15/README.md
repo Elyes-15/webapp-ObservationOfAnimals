@@ -87,7 +87,6 @@ Email:elyes.fetmouche@etu.univ-orleans.fr
 Mot de passe:223160638JE
 
 ## 3.3:On lance le serveur et on se connecte:
-<<<<<<< HEAD
 
 http://127.0.0.1:8088/admin/
 
@@ -104,8 +103,8 @@ Commandes utilisées :
 ````bash
 # Créer le dossier fixtures
 =======
-http://127.0.0.1:8088/admin/ 
-## 2.3.1 : Gestion des observations 
+http://127.0.0.1:8088/admin/
+## 2.3.1 : Gestion des observations
 
   Création du modèle Observation:
 
@@ -119,8 +118,8 @@ Le modèle contient :
 - description (TextField)
 - animal (ForeignKey vers Animal)
 
-Pour rendre le modele disponible dans l’administration Django :  
-dans `admin.py` : on tape 
+Pour rendre le modele disponible dans l’administration Django :
+dans `admin.py` : on tape
 ```python
 admin.site.register(Observation)
 ```
@@ -159,7 +158,7 @@ Le fichier contient plus de 50 observations différentes, chacune avec :
 Commandes utilisées :
 
 ```bash
-# Créer le dossier fixtures 
+# Créer le dossier fixtures
 >>>>>>> tests
 mkdir -p observo/fixtures
 
@@ -174,7 +173,7 @@ python manage.py loaddata observations
 python manage.py runserver 0.0.0.0:8088
 -et taper sur
  http://127.0.0.1:8088/admin/
- 
+
 ```
 ## 2.3.3 : Vue et template pour les détails d'une observation
 
@@ -184,7 +183,7 @@ Créer le template `observo/templates/observo/observ_detail.html`.
 
 Ajouter l’URL dans `observo/urls.py` et inclure dans `cc2/urls.py`.
 
-Exemple d’URL :  
+Exemple d’URL :
 /observs/n où n est l’identifiant de l’observation.
 
 - Commandes / fichiers modifiés :
@@ -194,7 +193,7 @@ Créer le template observo/templates/observo/observ_detail.html
 Ajouter l'URL /observs/n dans observo/urls.py
 Inclure les URLs dans cc2/urls.py
 ```
-## 2.3.4 : Liste tabulaire des observations
+ ## 2.3.4 : Liste tabulaire des observations
 
 Créer la vue `observ_list` dans `observo/views.py`.
 
@@ -213,7 +212,7 @@ La liste affiche :
 Créer la vue observ_list dans observo/views.py
 Créer le template observo/templates/observo/observ_list.html
 Ajouter l'URL /observs dans observo/urls.py
-Inclure les URLs dans cc2/urls.py 
+Inclure les URLs dans cc2/urls.py
 ```
 ## 2.3.5 : Ajouter une nouvelle observation via formulaire
 
@@ -239,7 +238,7 @@ Créer le formulaire ObservationForm dans observo/forms.py
 Créer la vue new_observ dans observo/views.py
 Créer le template observo/templates/observo/new_observ.html
 Ajouter l'URL /new_observ dans observo/urls.py
-Inclure les URLs dans cc2/urls.py 
+Inclure les URLs dans cc2/urls.py
 ```
 
 ## 2.3.6 : Supprimer une observation
@@ -311,7 +310,6 @@ Ajouter un lien de modification dans la liste des observations
    - Boutons stylés : `btn btn-success`, `btn btn-secondary`, `btn btn-danger`.
    - Tables avec classes Bootstrap si besoin (`table table-striped` ou `table table-bordered`).
 
-<<<<<<< HEAD
 ## 19. Authentification et accès restreint
 
 ### 19.1 Mise en place de l’authentification Django
@@ -386,10 +384,11 @@ Lors de l’inscription, un champ permet de définir si l’utilisateur est admi
 
 Traitement côté serveu
 ````
-=======
+
 ### Tests réalisés
 
 - **Modèles**
+
   - `Animal` : création d’un animal et vérification de son `nom_commun`.
 
 - **Vues**
@@ -405,7 +404,7 @@ Pour lancer les tests, utiliser :
 python manage.py test
 >>>>>>> tests
 
-# Question23: 
+# Question23:
 1.1/Création de la carte des observations avec barre de recherche par animal:
 vue:
 @login_required
@@ -414,7 +413,7 @@ def liste_observations(request):
         observations = Observation.objects.all().order_by('-date', '-heure')
     else:
         observations = Observation.objects.filter(utilisateur=request.user).order_by('-date', '-heure')
-    
+
     # Récupération des animaux pour le filtre
     animaux = Animal.objects.all().order_by('nom_commun')
 
@@ -486,3 +485,95 @@ Template:liste_observations:
     });
 </script>
 
+```
+
+## 23. Extension – Statistiques globales et visualisation des observations
+
+Cette partie de l’extension a pour objectif de fournir une analyse globale des observations enregistrées dans l’application, sous forme de statistiques numériques et de graphes interactifs.
+
+Les statistiques portent sur l’ensemble des observations visibles sur la carte (et non des statistiques personnelles).
+
+---
+
+### 23.1 Objectifs
+
+- Fournir une vue synthétique de l’activité d’observation
+- Mettre en valeur les données collectées via des indicateurs clairs
+- Visualiser les tendances temporelles et biologiques
+- Compléter la carte par une analyse statistique
+
+---
+
+### 23.2 Création de la page Statistiques
+
+Une nouvelle page dédiée a été créée :
+
+- URL : `/stats/`
+- Accessible depuis la barre de navigation
+- Affiche toutes les statistiques et graphes
+
+Fichiers concernés :
+
+- `observo/views.py`
+- `observo/templates/observo/stats.html`
+- `observo/urls.py`
+- `observo/templates/observo/base.html` (navbar)
+
+---
+
+### 23.3 Statistiques calculées (Django ORM)
+
+Les statistiques sont calculées uniquement à l’aide du **Django ORM**, sans bibliothèque externe côté backend.
+
+Statistiques affichées :
+
+- Nombre total d’observations
+- Nombre d’espèces différentes observées
+- Animal le plus observé
+- Mois avec le plus d’observations
+
+Exemples de requêtes utilisées :
+
+- `Observation.objects.count()`
+- `Observation.objects.values('animal').distinct().count()`
+- Agrégation avec `Count`
+- Regroupement temporel avec `TruncMonth`
+
+---
+
+### 23.4 Graphes et visualisation (Chart.js)
+
+Les données statistiques sont visualisées à l’aide de **Chart.js** côté frontend.
+
+Graphes implémentés :
+
+1. **Histogramme – Observations par mois**
+
+   - Permet d’identifier les périodes les plus actives
+
+2. **Diagramme circulaire (Pie chart) – Répartition par statut IUCN**
+
+   - Visualise l’état de conservation des espèces observées
+
+3. **Histogramme horizontal – Observations par animal**
+   - Met en évidence les espèces les plus fréquemment observées
+
+Les graphes sont intégrés dans la page `stats.html` à l’aide de balises `<canvas>` et de scripts JavaScript.
+
+---
+
+### 23.5 Intégration dans l’interface
+
+- Ajout d’un lien **Stats** dans la barre de navigation
+- Mise en page responsive avec Bootstrap
+- Les graphes sont affichés côte à côte pour une meilleure lisibilité
+
+---
+
+### 23.6 Résultat
+
+Cette extension permet de transformer l’application en un véritable outil d’analyse naturaliste :
+
+- La carte montre _où_ les observations ont lieu
+- Les statistiques expliquent _quoi_ et _quand_ elles ont été observées
+- L’ensemble offre une vision claire, structurée et exploitable des données
