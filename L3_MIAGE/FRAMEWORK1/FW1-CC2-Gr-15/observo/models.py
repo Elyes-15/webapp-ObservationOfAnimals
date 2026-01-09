@@ -27,6 +27,7 @@ class Observation(models.Model):
     description = models.TextField(blank=True)
     utilisateur = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey( User, on_delete=models.CASCADE, null=True, blank=True, related_name='observations')
 
     def __str__(self):
         return f"Observation de {self.animal.nom_commun} le {self.date}"

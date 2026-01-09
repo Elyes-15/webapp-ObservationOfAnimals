@@ -9,6 +9,7 @@
   <div class="card mt-3">
     <div class="card-body">
       <h5 class="card-title">{{ observation.animal.nom_commun }}</h5>
+
       <p class="card-text"><strong>Date :</strong> {{ observation.date }}</p>
       <p class="card-text"><strong>Heure :</strong> {{ observation.heure }}</p>
       <p class="card-text"><strong>Latitude :</strong> {{ observation.latitude }}</p>
@@ -16,16 +17,19 @@
       <p class="card-text"><strong>Description :</strong> {{ observation.description|default:"Aucune" }}</p>
 
       <div class="mt-3">
-       
         <a class="btn btn-primary" href="{% url 'liste_observations' %}">Retour à la liste</a>
 
-    
-        {% if request.user.is_superuser or observation.utilisateur == request.user %}
+        {% if request.user == observation.utilisateur or request.user.profile.role == 'admin' %}
           <a href="{% url 'change_observ' observation.id %}" class="btn btn-warning">Modifier</a>
           <a href="{% url 'delete_observ' observation.id %}" class="btn btn-danger">Supprimer</a>
         {% endif %}
       </div>
     </div>
   </div>
+
+
+  {% if observation.latitude and observation.longitude %}
+    <div id="map" style="height: 400px;" class="mt-4"></div>
+  {% endif %}
 </div>
 {% endblock %}

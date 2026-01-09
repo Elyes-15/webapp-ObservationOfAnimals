@@ -577,3 +577,85 @@ Cette extension permet de transformer l’application en un véritable outil d�
 - La carte montre _où_ les observations ont lieu
 - Les statistiques expliquent _quoi_ et _quand_ elles ont été observées
 - L’ensemble offre une vision claire, structurée et exploitable des données
+
+## Question 23 — 
+### Partie d'implémentation du journal personnel
+
+Cette partie décrit l'implémentation technique de l'extension permettant à chaque utilisateur de consulter uniquement ses propres observations dans une page dédiée appelée **Mon journal**. Cette fonctionnalité s'appuie sur le champ `owner` ajouté au modèle et sur les permissions déjà mises en place dans les questions précédentes.
+
+---
+
+## 1. Mise à jour du modèle
+
+Un champ `owner` a été ajouté au modèle `Observation` afin d'associer chaque observation à l'utilisateur qui l'a créée :
+
+```python
+owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+```
+
+Ce champ est utilisé exclusivement pour l'extension du journal personnel.
+
+---
+
+## 2. Mise à jour de la vue de création d'observation
+
+Lors de la création d'une observation, l'utilisateur connecté est automatiquement enregistré comme propriétaire :
+
+```python
+if form.is_valid():
+    observation = form.save(commit=False)
+    observation.utilisateur = request.user   
+    observation.owner = request.user         
+    observation.save()
+```
+
+pour que chaque observation est correctement liée à son créateur.
+
+---
+
+## 3. Création de la vue `mon_journal`
+
+Une nouvelle vue a été ajoutée pour afficher uniquement les observations appartenant à l'utilisateur connecté :
+
+```python
+@login_required
+def mon_journal(request):
+    observations = Observation.objects.filter(owner=request.user).order_by('-date')
+    return render(request, 'observo/mon_journal.html', {
+        'observations': observations
+    })
+```
+
+---
+
+## 4. Ajout de l'URL associée
+
+Dans `observo/urls.py` :
+
+```python
+path('mon_journal/', views.mon_journal, name='mon_journal'),
+```
+
+---
+
+## 5. Création du template `mon_journal.html`
+
+Le template affiche les observations de l'utilisateur sous forme de tableau .
+
+
+## 6. Mise à jour de la barre de navigation
+
+Un lien vers le journal personnel a été ajouté dans `base.html`, visible uniquement pour les utilisateurs connectés :
+
+```html
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'mon_journal' %}">Mon journal</a>
+</li>
+```
+
+---
+## 7. Tests réalisés
+
+- Aprés la création d'une observation , cette derniere apparaît immédiatement dans Mon journal.
+- toutes les autres pages fonctionnent toujours comme avant.
+

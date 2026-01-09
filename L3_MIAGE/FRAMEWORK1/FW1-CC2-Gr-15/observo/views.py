@@ -120,8 +120,11 @@ def new_observ(request):
     if request.method == 'POST':
         form = ObservationForm(request.POST)
         if form.is_valid():
-            form.save(user=request.user)
-            messages.success(request, "Observation ajoutée avec succès !")
+            observation = form.save(commit=False, user=request.user)
+            observation.utilisateur = request.user
+            observation = form.save(commit=False)   
+            observation.owner = request.user         
+            observation.save()
             return redirect('liste_observations')
     else:
         form = ObservationForm()
@@ -267,4 +270,11 @@ def stats_view(request):
         'obs_par_mois': obs_par_mois,
         'obs_par_iucn': obs_par_iucn,
         'obs_par_animal': obs_par_animal,
+    })
+    
+@login_required
+def mon_journal(request):
+    observations = Observation.objects.filter(owner=request.user).order_by('-date')
+    return render(request, 'observo/mon_journal.html', {
+        'observations': observations
     })

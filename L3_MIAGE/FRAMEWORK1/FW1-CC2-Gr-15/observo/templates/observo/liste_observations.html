@@ -3,9 +3,9 @@
 {% block title %}Liste des observations{% endblock %}
 
 {% block content %}
-<h1>Liste des observations</h1>
+<h1 class="mb-4">Liste des observations</h1>
 
-
+<!-- Filtre -->
 <div class="mb-3">
   <label for="animalSelect" class="form-label">Filtrer par animal :</label>
   <select id="animalSelect" class="form-select">
@@ -16,10 +16,10 @@
   </select>
 </div>
 
-
+<!-- Carte -->
 <div id="map" style="height: 500px; margin-bottom: 20px;"></div>
 
-
+<!-- Tableau -->
 <table class="table table-striped table-bordered" id="obsTable">
     <thead>
         <tr>
@@ -29,6 +29,7 @@
             <th>Actions</th>
         </tr>
     </thead>
+
     <tbody>
         {% for observation in observations %}
         <tr data-animal-id="{{ observation.animal.id }}">
@@ -37,7 +38,8 @@
             <td>{{ observation.latitude }}, {{ observation.longitude }}</td>
             <td>
                 <a href="{% url 'detail_observation' observation.id %}" class="btn btn-info btn-sm">Voir</a>
-                {% if request.user.is_superuser or observation.utilisateur == request.user %}
+
+                {% if request.user == observation.utilisateur or request.user.profile.role == 'admin' %}
                     <a href="{% url 'change_observ' observation.id %}" class="btn btn-warning btn-sm">Modifier</a>
                     <a href="{% url 'delete_observ' observation.id %}" class="btn btn-danger btn-sm">Supprimer</a>
                 {% endif %}
@@ -45,51 +47,42 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="4">Aucune observation enregistrée.</td>
+            <td colspan="4" class="text-center">Aucune observation enregistrée.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-{% if not observations %}
-<div class="alert alert-info">
-    Aucune observation à afficher.
-</div>
-{% endif %}
-
-
+<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-    
     var map = L.map('map').setView([46.6, 2.5], 6);
 
-   
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
     }).addTo(map);
 
     var markers = [];
+
     {% for observation in observations %}
         {% if observation.latitude and observation.longitude %}
-        var marker{{ observation.id }} = L.marker([{{ observation.latitude }}, {{ observation.longitude }}])
-            .bindPopup(
-                "<b>{{ observation.animal.nom_commun }}</b><br>" +
-                "Date: {{ observation.date }} {{ observation.heure }}<br>" +
-                "Description: {{ observation.description|default:'Aucune'|escapejs }}"
-            );
-        marker{{ observation.id }}.animalId = {{ observation.animal.id }};
-        marker{{ observation.id }}.addTo(map);
-        markers.push(marker{{ observation.id }});
+            var marker = L.marker([{{ observation.latitude }}, {{ observation.longitude }}])
+                .bindPopup(
+                    "<b>{{ observation.animal.nom_commun }}</b><br>" +
+                    "Date : {{ observation.date }} {{ observation.heure }}<br>" +
+                    "Description : {{ observation.description|default:'Aucune'|escapejs }}"
+                );
+            marker.animalId = {{ observation.animal.id }};
+            marker.addTo(map);
+            markers.push(marker);
         {% endif %}
     {% endfor %}
 
-    var select = document.getElementById('animalSelect');
-    select.addEventListener('change', function() {
+    document.getElementById('animalSelect').addEventListener('change', function() {
         var animalId = this.value;
 
-       
         markers.forEach(function(marker) {
             if (!animalId || marker.animalId == animalId) {
                 if (!map.hasLayer(marker)) marker.addTo(map);
@@ -98,10 +91,8 @@
             }
         });
 
-    
-        var rows = document.querySelectorAll('#obsTable tbody tr');
-        rows.forEach(function(row) {
-            if (!animalId || row.getAttribute('data-animal-id') == animalId) {
+        document.querySelectorAll('#obsTable tbody tr').forEach(function(row) {
+            if (!animalId || row.dataset.animalId == animalId) {
                 row.style.display = '';
             } else {
                 row.style.display = 'none';

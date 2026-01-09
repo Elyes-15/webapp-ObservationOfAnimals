@@ -29,4 +29,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     path('stats/', views.stats_view, name='stats'),
+     path('mon_journal/', views.mon_journal, name='mon_journal'),
 ]
