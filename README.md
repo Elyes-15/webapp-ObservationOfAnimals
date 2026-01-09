@@ -101,10 +101,10 @@ dans admin.py : on tape admin.site.register(Animal) .
 Commandes utilisées :
 
 ````bash
-# Créer le dossier fixtures
+
 =======
 http://127.0.0.1:8088/admin/
-## 2.3.1 : Gestion des observations
+
 
   Création du modèle Observation:
 
@@ -159,7 +159,7 @@ Commandes utilisées :
 
 ```bash
 # Créer le dossier fixtures
->>>>>>> tests
+
 mkdir -p observo/fixtures
 
 # Créer et remplir le fichier observations.json avec au moins 50 observations
@@ -402,7 +402,7 @@ Pour lancer les tests, utiliser :
 
 ```bash
 python manage.py test
->>>>>>> tests
+
 
 # Question23:
 1.1/Création de la carte des observations avec barre de recherche par animal:
@@ -658,4 +658,53 @@ Un lien vers le journal personnel a été ajouté dans `base.html`, visible uniq
 
 - Aprés la création d'une observation , cette derniere apparaît immédiatement dans Mon journal.
 - toutes les autres pages fonctionnent toujours comme avant.
+
+
+
+# Améliorations Front-End
+Dans ce projet, plusieurs améliorations ont été apportées à l’interface utilisateur pour rendre l’application plus moderne, intuitive et agréable à utiliser. Voici un résumé des étapes réalisées :
+
+1. Styling de la Navbar
+
+Création d’une navbar personnalisée avec couleur bleu nuit (#1a1f36).
+
+Logo du renard 🦊 ajouté à gauche avec un style distinctif.
+
+Liens de navigation en blanc, avec un effet hover doré (#ffd700).
+
+Affichage dynamique selon le rôle de l’utilisateur :
+
+Admin : accès complet aux listes, ajout et statistiques.
+
+Utilisateur normal : accès limité (liste des observations, ajout d’observation, journal personnel).
+
+Gestion des boutons pour les utilisateurs non-admin :
+
+Lien “Ajouter” pour les non-admin redirige vers une page indiquant “Vous devez être admin” ou vers la connexion si non connecté.
+2. Tables et Listes d’Observations et d’Animaux
+
+Ajout de tables Bootstrap (table-striped, table-bordered) pour afficher les listes.
+
+Boutons stylisés “Voir”, “Modifier”, “Supprimer” avec Bootstrap (btn-info, btn-warning, btn-danger).
+
+Filtrage dynamique des observations par animal avec un select Bootstrap et intégration de Leaflet pour la carte.
+
+Gestion des permissions directement dans les templates pour ne pas afficher les boutons si l’utilisateur n’a pas les droits, ou pour rediriger si nécessaire.
+4. Page “À propos” et éléments interactifs
+
+Ajout d’un bouton “Cliquez ici pour une surprise 🐾”.
+
+Affichage d’un texte dynamique et d’un logo renard géant en JS lors du clic.
+
+Utilisation de JavaScript léger pour les interactions et animations simples.
+5. Gestion des permissions dans le front
+
+Utilisation de conditions dans les templates pour afficher ou masquer les liens selon :
+
+user.is_authenticated
+
+user.profile.role == 'admin'
+
+Ajout d’une page admin_required.html pour informer l’utilisateur qu’il doit être admin pour accéder à certaines fonctionnalités.
+
 

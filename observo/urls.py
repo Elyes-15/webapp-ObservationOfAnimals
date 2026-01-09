@@ -30,4 +30,5 @@ urlpatterns = [
 
     path('stats/', views.stats_view, name='stats'),
      path('mon_journal/', views.mon_journal, name='mon_journal'),
+       path('admin-required/', views.admin_required_page, name='admin_required'),
 ]

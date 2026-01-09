@@ -13,6 +13,7 @@ from django.db import models
 from django.db.models import Count
 from django.db import models
 from django.db.models import Count
+from django.contrib.auth.decorators import login_required
 
 
 def est_admin(user):
@@ -278,3 +279,7 @@ def mon_journal(request):
     return render(request, 'observo/mon_journal.html', {
         'observations': observations
     })
+
+def admin_required_page(request):
+    """Page pour indiquer que l'accès admin est nécessaire."""
+    return render(request, 'observo/admin_required.html')

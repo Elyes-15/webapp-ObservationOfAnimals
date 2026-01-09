@@ -1,0 +1,11 @@
+{% extends 'observo/base.html' %}
+
+{% block title %}Accès admin requis{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="text-danger">⚠️ Accès refusé</h1>
+    <p>Vous devez être un administrateur pour accéder à cette page.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary mt-3">Se connecter</a>
+</div>
+{% endblock %}
