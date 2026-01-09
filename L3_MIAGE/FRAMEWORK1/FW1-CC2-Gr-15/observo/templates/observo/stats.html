@@ -1,0 +1,165 @@
+{% extends "observo/base.html" %}
+{% block title %}Statistiques des observations{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <h1 class="mb-4 text-center">Statistiques des observations</h1>
+
+  <div class="row text-center mb-5">
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5>Total observations</h5>
+          <p class="fs-3">{{ total_observations }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5>Espèces différentes</h5>
+          <p class="fs-3">{{ total_especes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5>Animal le + observé</h5>
+          <p class="fs-5">{{ animal_plus_observe }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5>Mois le + actif</h5>
+          <p class="fs-5">{{ mois_plus_actif }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="text-center">Observations par mois</h5>
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="text-center">Répartition par statut IUCN</h5>
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="text-center">Nombre d’observations par animal</h5>
+          <canvas id="animalChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const barLabels = [
+  {% for item in obs_par_mois %}
+    "{{ item.mois }}",
+  {% endfor %}
+];
+
+const barData = [
+  {% for item in obs_par_mois %}
+    {{ item.total }},
+  {% endfor %}
+];
+
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: barLabels,
+    datasets: [{
+      label: 'Observations',
+      data: barData,
+    }]
+  },
+  options: {
+    responsive: true
+  }
+});
+
+const pieLabels = [
+  {% for item in obs_par_iucn %}
+    "{{ item.statut }}",
+  {% endfor %}
+];
+
+const pieData = [
+  {% for item in obs_par_iucn %}
+    {{ item.total }},
+  {% endfor %}
+];
+
+new Chart(document.getElementById('pieChart'), {
+  type: 'pie',
+  data: {
+    labels: pieLabels,
+    datasets: [{
+      data: pieData,
+    }]
+  }
+});
+
+const animalLabels = [
+  {% for item in obs_par_animal %}
+    "{{ item.animal__nom_commun }}",
+  {% endfor %}
+];
+
+const animalData = [
+  {% for item in obs_par_animal %}
+    {{ item.total }},
+  {% endfor %}
+];
+
+new Chart(document.getElementById('animalChart'), {
+  type: 'bar',
+  data: {
+    labels: animalLabels,
+    datasets: [{
+      label: 'Observations',
+      data: animalData,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+  }
+});
+</script>
+
+<style>
+canvas {
+  max-height: 350px;
+}
+</style>
+
+{% endblock %}
