@@ -1,10 +1,9 @@
 # FW1-CC2 – Projet Django Observations Animales
 
 ## Membres du groupe
-
+     Elyes Fetmouche- elyes.fetmouche@etu.univ-orleans.fr
     Kamilia Hacini - kamilia.hacini@etu.univ-orleans.fr
     Sarah Chibane - sarah.chibane@etu.univ-orleans.fr
-    Elyes Fetmouche- elyes.fetmouche@etu.univ-orleans.fr
     Rayane Touak- rayane.touak@etu.univ-orleans.fr
 
 # 1. Création du projet Django
